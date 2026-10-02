@@ -1,0 +1,12 @@
+SHOPEE DEAL MACHINE ENTERPRISE V5.0 — VALIDATION
+
+- Core/unit tests: 22/22 PASS
+- Python compile (app + Windows helpers): PASS
+- JavaScript syntax: PASS
+- FastAPI smoke: health/dashboard/offers/activity/settings/analytics/home = HTTP 200
+- Authentication smoke: redirect unauthenticated + invalid login 401 + valid session = PASS
+- Docker Compose YAML: PASS (web, worker, reader, postgres, redis, backup, caddy)
+- PowerShell static encoding check: PASS (no double BOM)
+- No .env/Telegram session/database intended in release package
+
+External live calls to Shopee/Telegram require the operator's credentials and are intentionally not executed in the build environment.
