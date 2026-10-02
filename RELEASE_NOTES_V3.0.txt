@@ -1,0 +1,18 @@
+SHOPEE DEAL MACHINE WINDOWS GUI V3.0
+
+Correções principais:
+- Inicialização autocorretiva: verifica pip e todas as dependências antes de subir o robô.
+- Corrige chamada do pip que podia falhar por causa da posição de --no-warn-script-location.
+- O Supervisor não depende mais de python-dotenv para conseguir iniciar e registrar diagnóstico.
+- INICIAR_ROBO mostra a saída real do Python/pip quando algo falha.
+- Central Windows executa a mesma autorreparação antes de iniciar.
+- Supervisor é iniciado com stdout/stderr redirecionados para logs de bootstrap.
+- Inicialização automática do Windows usa AutoSupervisor.ps1: repara o ambiente, inicia o supervisor em primeiro plano e permite ao Agendador reiniciar se cair.
+- Mantém console aberto em erro e salva logs em /logs.
+
+Logs úteis:
+- logs/self_heal.log
+- logs/supervisor_bootstrap_err.log
+- logs/supervisor_bootstrap_out.log
+- logs/start_robot_error.txt
+- logs/autostart.log
