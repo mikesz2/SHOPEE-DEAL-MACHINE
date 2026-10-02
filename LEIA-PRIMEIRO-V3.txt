@@ -1,0 +1,10 @@
+SHOPEE DEAL MACHINE WINDOWS GUI V3.3
+
+1. Extraia o ZIP inteiro para uma pasta normal. Não execute arquivos de dentro do ZIP.
+2. Abra ABRIR_CENTRAL_WINDOWS.vbs.
+3. Clique em Instalar / Atualizar. Se o Python já estiver instalado, ele será reaproveitado.
+4. Preencha Configuração e salve.
+5. Clique em Iniciar tudo. A V3.3 verifica e repara automaticamente pip, bibliotecas e banco antes de iniciar.
+6. Se ocorrer erro, a janela não fecha sozinha e os detalhes ficam na pasta logs.
+
+Você também pode usar INICIAR_ROBO.vbs. Ele executa a mesma verificação automática antes de ligar o supervisor.

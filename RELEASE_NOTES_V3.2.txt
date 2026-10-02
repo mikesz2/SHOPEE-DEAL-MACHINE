@@ -1,0 +1,8 @@
+SHOPEE DEAL MACHINE WINDOWS GUI V3.2
+
+- Corrige falso erro de pip no Windows Server.
+- Pip agora e validado por codigo de saida real, nao por texto/warnings.
+- Instalador delega a preparacao de pip/dependencias ao self_heal.py.
+- Executor PowerShell usa System.Diagnostics.Process com stdout/stderr separados.
+- Warnings do pip em stderr nao viram falha quando ExitCode=0.
+- Mantem janela de diagnostico aberta em erros.

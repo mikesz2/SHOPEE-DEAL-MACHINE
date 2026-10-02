@@ -1,0 +1,8 @@
+Shopee Deal Machine V3.6 - Telegram Login UI Fix
+
+- Corrige botoes de login Telegram cortados/invisiveis em Windows Server.
+- Botao ENVIAR CODIGO agora fica imediatamente abaixo do telefone.
+- Janela maior e layout em grid para impedir clipping.
+- Explica que o codigo normalmente chega no chat oficial Telegram dentro do aplicativo, nao necessariamente por SMS.
+- Enter envia/confirma conforme a etapa.
+- Mensagens amigaveis para telefone invalido, codigo expirado/invalido e FloodWait.
