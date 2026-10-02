@@ -1,0 +1,152 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-sdm}
+      POSTGRES_USER: ${POSTGRES_USER:-sdm}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sdm} -d ${POSTGRES_DB:-sdm}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [backend]
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server","--appendonly","yes","--maxmemory-policy","allkeys-lru"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD","redis-cli","ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [backend]
+
+  web:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      APP_ENV: production
+      APP_HOST: 0.0.0.0
+      APP_PORT: 8787
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-sdm}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-sdm}
+      REDIS_URL: redis://redis:6379/0
+      REDIS_REQUIRED: "true"
+      COOKIE_SECURE: "true"
+    command: ["uvicorn","app.main:app","--host","0.0.0.0","--port","8787","--proxy-headers","--forwarded-allow-ips=*"]
+    volumes:
+      - app_data:/app/data
+      - app_logs:/app/logs
+      - app_backups:/app/backups
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD","curl","-fsS","http://127.0.0.1:8787/api/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+    networks: [backend, edge]
+
+  worker:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      APP_ENV: production
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-sdm}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-sdm}
+      REDIS_URL: redis://redis:6379/0
+      REDIS_REQUIRED: "true"
+    command: ["python","-m","app.worker"]
+    volumes:
+      - app_data:/app/data
+      - app_logs:/app/logs
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      web: {condition: service_healthy}
+    networks: [backend, edge]
+
+  reader:
+    build:
+      context: ../..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      APP_ENV: production
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-sdm}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-sdm}
+      REDIS_URL: redis://redis:6379/0
+      REDIS_REQUIRED: "true"
+    command: ["python","-m","app.telegram_listener"]
+    volumes:
+      - app_data:/app/data
+      - telegram_session:/app/data/telegram
+      - app_logs:/app/logs
+    depends_on:
+      postgres: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      web: {condition: service_healthy}
+    networks: [backend, edge]
+
+  backup:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      PGHOST: postgres
+      PGDATABASE: ${POSTGRES_DB:-sdm}
+      PGUSER: ${POSTGRES_USER:-sdm}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-14}
+    volumes:
+      - app_backups:/backups
+    depends_on:
+      postgres: {condition: service_healthy}
+    command: >-
+      sh -c 'while true; do
+      ts=$$(date +%Y%m%d_%H%M%S);
+      pg_dump --format=custom --file=/backups/sdm_$${ts}.dump;
+      find /backups -type f -name "sdm_*.dump" -mtime +$${BACKUP_RETENTION_DAYS} -delete;
+      sleep 43200;
+      done'
+    networks: [backend]
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN}
+    ports: ["80:80","443:443"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      web: {condition: service_healthy}
+    networks: [edge]
+
+networks:
+  backend:
+    internal: true
+  edge:
+
+volumes:
+  postgres_data:
+  redis_data:
+  app_data:
+  app_logs:
+  app_backups:
+  telegram_session:
+  caddy_data:
+  caddy_config:
