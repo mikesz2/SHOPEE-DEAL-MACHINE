@@ -1,0 +1,6 @@
+Shopee Deal Machine Windows GUI v3.4
+
+- Barra de navegacao visivel no cabecalho: Visao geral, Configuracoes, Logs e Backups.
+- F2 abre Configuracoes como atalho.
+- Corrige abas nativas que podiam ficar escondidas no Windows Server.
+- Preserva todas as correcoes da V3.3.
