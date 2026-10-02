@@ -1,0 +1,26 @@
+SHOPEE DEAL MACHINE ENTERPRISE — WINDOWS GUI V5.0
+
+MODO MAIS SIMPLES PARA VPS WINDOWS
+
+1) Extraia a pasta inteira em C:\ShopeeDealMachine (ou Documentos\ShopeeDealMachine).
+2) Abra ABRIR_CENTRAL_WINDOWS.cmd.
+3) Aceite o UAC.
+4) Clique em Instalar / Atualizar.
+5) Em Configurações, informe painel, Shopee e Telegram e salve.
+6) Conecte a conta leitora do Telegram.
+7) Clique em Iniciar tudo.
+8) Abra o painel e teste as integrações/fontes antes de ativar publicação automática.
+9) Configure o chat administrativo para receber alertas de falha e fila alta.
+10) Ative Iniciar com Windows somente depois do diagnóstico ficar todo verde.
+
+V5.0
+- novo dashboard Enterprise;
+- busca/filtros e ações em lote;
+- auditoria persistente;
+- backpressure de fila;
+- circuit breaker do publicador;
+- rate limit de login e segredo de sessão separado;
+- performance por fonte/template/categoria;
+- modo Enterprise Docker com PostgreSQL/Redis/Caddy disponível em deploy\enterprise.
+
+Para uma operação importante, mantenha backup testado e não exponha a porta 8787 diretamente à internet sem HTTPS/reverse proxy.

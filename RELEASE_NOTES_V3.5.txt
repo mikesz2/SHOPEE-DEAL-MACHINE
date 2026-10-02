@@ -1,0 +1,7 @@
+Shopee Deal Machine Windows GUI v3.5
+
+- Corrige erro charmap/cp1252 no Testar Bot do Telegram.
+- Forca UTF-8 em todos os subprocessos Python iniciados pela Central Windows.
+- Teste Telegram serializa JSON em ASCII-safe, mantendo nomes Unicode corretamente apos ConvertFrom-Json.
+- Supervisor, Self-Heal e StartRobot propagam PYTHONUTF8=1 e PYTHONIOENCODING=utf-8.
+- Evita falhas com nomes de grupos, canais e bots contendo emoji, acentos ou caracteres fora de cp1252.

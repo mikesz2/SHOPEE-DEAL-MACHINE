@@ -1,0 +1,7 @@
+SHOPEE DEAL MACHINE WINDOWS GUI V3.1
+
+- Corrige launchers VBS/CMD em Windows Server: sem BOM UTF-8 nos arquivos executados pelo WSH/CMD.
+- Abertura principal passa a usar CMD ASCII, reduzindo incompatibilidades do Windows Script Host.
+- Instalador de arquivo unico nao exige abrir/extrair ZIP manualmente.
+- Mantem Self-Heal da V3.0 para Python, pip, dependencias, banco e supervisor.
+- Console de diagnostico permanece aberto quando ocorre erro.
