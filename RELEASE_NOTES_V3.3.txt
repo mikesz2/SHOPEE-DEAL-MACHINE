@@ -1,0 +1,9 @@
+SHOPEE DEAL MACHINE V3.3 - PROJECT PATH FIX
+
+- Corrige ModuleNotFoundError: No module named app no Windows Server.
+- Scripts da pasta windows adicionam a raiz do projeto ao sys.path.
+- Self-heal exporta PYTHONPATH para processos filhos.
+- Supervisor exporta PYTHONPATH para Web, Worker e Radar.
+- init_db usa caminho absoluto e cwd da raiz.
+- Testes de integração usam a raiz do projeto explicitamente.
+- Novo smoke_imports.py para validar app/config/db antes de iniciar.

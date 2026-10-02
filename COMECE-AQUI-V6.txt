@@ -1,0 +1,44 @@
+DEAL MACHINE - COMMAND CENTER V6
+
+SE VOCE JA USA A ENTERPRISE V5
+1. Extraia este ZIP em uma pasta NOVA, sem apagar a instalacao atual.
+2. Pare os servicos pela Central Windows da instalacao atual.
+3. Na pasta nova, abra ATUALIZAR_PAINEL_V6.cmd.
+4. Escolha a pasta onde seu robo V5 ja esta instalado.
+5. Inicie os servicos novamente e abra o painel. Use Ctrl+F5 se necessario.
+
+O atualizador troca apenas os arquivos do painel web e sua fonte local.
+Nao altera .env, banco, credenciais, sessoes Telegram nem os servicos.
+Cria backup do painel antigo em backups\painel-pre-v6-DATA-HORA.
+Para voltar, pare os servicos e copie o conteudo de static desse backup para
+app\static da instalacao, substituindo os arquivos. Depois reinicie.
+
+INSTALACAO NOVA
+Abra ABRIR_CENTRAL_WINDOWS.cmd e siga LEIA-ME-WINDOWS.txt.
+Python, credenciais Shopee e Telegram sao necessarios como na V5.
+Para V4 ou anterior, use uma instalacao separada e configure pela Central;
+nao use o atualizador de painel sobre essas versoes.
+
+O QUE MUDOU
+- Nova identidade visual: verde-esmeralda, fundo claro e navegacao lateral.
+- Dashboard com indicadores reais e grafico dos ultimos sete dias.
+- Curadoria das tres ofertas com maior score entre as 60 mais recentes da fila.
+- Revisao da oferta antes da publicacao manual.
+- Pausar/ativar publicacao pela tela inicial.
+- Alertas de integracoes, servicos offline e ofertas com falha.
+- Busca rapida Ctrl+K, filtros de status, exportacao da pagina em CSV.
+- Tela de login renovada e layouts para celular.
+- Previa de mensagens das fontes em janela integrada.
+- Periodo de conversoes acompanha o filtro de performance.
+
+METRICAS
+Comissao do dashboard usa a data de sincronizacao, herdada da V5.
+Nao representa saldo disponivel ou valor pago pela Shopee.
+Fontes exibem comissao acumulada. O grafico diario usa UTC.
+Sem dados, o painel mostra estados vazios; nao inventa receita ou resultados.
+Os cards de ofertas mostram dados capturados. O publicador revalida antes do envio.
+A pausa nao cancela uma publicacao que ja estiver em andamento.
+
+VALIDACAO
+Consulte VALIDATION_V6.md para testes executados e limites.
+A V6 foi preparada e testada localmente. Nao foi instalada na sua VPS.

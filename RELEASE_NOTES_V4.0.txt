@@ -1,0 +1,15 @@
+SHOPEE DEAL MACHINE WINDOWS GUI V4.0
+
+RADAR TELEGRAM
+- Teste visual de fontes.
+- Resolve @username, link t.me ou ID numérico quando acessível à conta leitora.
+- Mostra título, username, ID Telegram, última mensagem e links Shopee em amostra recente.
+- Importação do histórico: 20, 100 ou 500 mensagens.
+- Prévia das mensagens recentes.
+- IPC local entre painel e Reader: reutiliza a sessão Telegram que já está aberta.
+- Mantém monitoramento de mensagens novas.
+
+SEGURANÇA / CONFIABILIDADE
+- Comandos do painel para o Reader são limitados a ações conhecidas e ficam em arquivos locais da VPS.
+- URLs continuam restritas aos domínios Shopee permitidos antes da ingestão.
+- Atualizador preserva .env, banco, sessão Telegram, logs e backups.
