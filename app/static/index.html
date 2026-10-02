@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#102a26">
+<title>Deal Machine · Command Center</title>
+<link rel="stylesheet" href="/static/app.css?v=6">
+<link rel="stylesheet" href="/static/refined.css?v=7.1">
+</head>
+<body>
+<button class="sidebarBackdrop" id="sidebarBackdrop" aria-label="Fechar menu" hidden></button>
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="logo"><div class="logoMark">d<i data-icon="chart"></i></div><div><b>deal machine<span class="brandDot">.</span></b><span>Command Center · V7.1</span></div></div><div class="workspace"><span class="workspaceAvatar">M</span><div><b>Minha operação</b><small>Shopee + Telegram + WhatsApp</small></div><span class="workspaceArrow">⌄</span></div><span class="navCaption">SUA OPERAÇÃO</span>
+    <nav>
+      <button class="nav active" data-view="dashboard"><i data-icon="dashboard"></i>Visão geral</button>
+      <button class="nav" data-view="deals"><i data-icon="tag"></i>Ofertas</button>
+      <button class="nav" data-view="radar"><i data-icon="radar"></i>Radar Telegram</button>
+      <button class="nav" data-view="whatsapp"><i data-icon="radar"></i>WhatsApp</button>
+      <button class="nav" data-view="automation"><i data-icon="sliders"></i>Automação</button>
+      <button class="nav" data-view="analytics"><i data-icon="chart"></i>Performance</button>
+      <button class="nav" data-view="system"><i data-icon="system"></i>Sistema</button>
+    </nav>
+    <div class="sidebarNote"><i data-icon="bolt"></i><b>Uma operação. Mais controle.</b><p>Encontre, selecione e publique ofertas em um só lugar.</p><button onclick="openView('automation')">Ajustar automação <span>↗</span></button></div><div class="sidebarFoot"><div class="profileAvatar">OP</div><div><b>Administrador</b><div class="env">Command Center · V7.1</div></div><button class="ghost" onclick="logout()" aria-label="Sair da conta"><i data-icon="logout"></i></button></div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <button class="menu" id="menuBtn" aria-label="Abrir menu">☰</button>
+      <div class="breadcrumbs">Workspace <span>/</span> <b id="pageTitle">Visão geral</b><p id="pageSubtitle" class="srOnly">Sua central de ofertas.</p></div>
+      <div class="topActions"><button class="commandTrigger" onclick="showCommands()"><i data-icon="search"></i><span>Ir para…</span><kbd>Ctrl K</kbd></button><div class="servicePill" id="healthBadge">Conectando…</div><button class="iconButton" onclick="refreshAll(true)" aria-label="Atualizar dados"><i data-icon="refresh"></i></button><span class="topAvatar">M</span></div>
+    </header>
+    <div id="connectionNotice" class="connectionNotice" hidden role="status"></div>
+    <section class="view active" id="view-dashboard">
+      <div class="welcome"><div><div class="eyebrow">SEU CENTRO DE COMANDO</div><h1>Encontre valor.<br><span>Transforme em resultado.</span></h1><p>Sua curadoria de ofertas, fontes e publicações. Tudo em uma só visão.</p></div><button class="btn" onclick="showManual()"><i data-icon="plus"></i> Nova oferta</button></div>
+      <div class="overviewBar"><span><span class="liveDot"></span> Visão da operação <small id="lastUpdated">Carregando dados…</small></span><span class="dateRange" id="dateRange">Últimos 7 dias</span></div>
+      <div class="kpis" id="kpis"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+      <div class="dashboardMain">
+        <div class="card chartCard"><div class="cardHead"><div><h3>O ritmo da sua operação</h3><p class="hint">Ofertas detectadas e publicadas · últimos 7 dias (UTC)</p></div><div class="chartLegend"><span><i></i> Detectadas</span><span><i></i> Publicadas</span></div></div><div id="chartSummary" class="chartSummary"></div><div id="timeline" class="timeline"></div><div class="chartFooter"><span id="chartFootnote">Atualização automática</span><button class="linkBtn" onclick="openView('analytics')">Explorar performance <span>↗</span></button></div></div>
+        <div class="commandCard"><div class="commandTop"><span class="eyebrow">PILOTO AUTOMÁTICO</span><i data-icon="bolt"></i></div><h2>Seu próximo movimento,<br>sob controle.</h2><p>Da descoberta aos seus grupos, com suas regras de qualidade.</p><div id="automationState"></div><button id="automationToggle" class="btn commandBtn" onclick="toggleAutomation()" disabled>Carregando…</button><button class="commandLink" onclick="openView('automation')">Personalizar regras <span>↗</span></button></div>
+      </div>
+      <div id="insights" class="insights"></div>
+      <div class="sectionHead opportunityHead"><div><div class="eyebrow">CURADORIA DA FILA</div><h2>Próximas oportunidades</h2><p>As ofertas de maior score entre as 60 mais recentes da fila.</p></div><button class="linkBtn" onclick="filterOffers('queued')">Ver toda a fila <span>→</span></button></div>
+      <div id="spotlight" class="spotlight"><div class="emptyState">Carregando oportunidades…</div></div>
+      <div class="split equal bottomCards"><div class="card"><div class="cardHead"><div><h3>Fontes que fazem a diferença</h3><p class="hint">Comissão acumulada por fonte</p></div><button class="linkBtn" onclick="openView('radar')">Gerenciar ↗</button></div><div id="topSources"></div></div><div class="card"><div class="cardHead"><div><h3>Nos bastidores</h3><p class="hint">Últimos eventos da operação</p></div><button class="linkBtn" onclick="openView('system')">Ver tudo ↗</button></div><div id="activityMini" class="activity"></div></div></div>
+      <footer class="dashboardFooter"><span>DEAL MACHINE <b>ENTERPRISE</b></span><span>Clareza para decidir. Controle para crescer.</span></footer>
+    </section>
+
+    <section class="view" id="view-whatsapp">
+      <div class="sectionHead"><div><span class="eyebrow">DISTRIBUIÇÃO MULTICANAL</span><h2>Suas ofertas, em mais lugares.</h2><p>Selecione os grupos e acompanhe cada envio.</p></div><button class="btn soft" onclick="loadWhatsApp()">Atualizar conexão</button></div>
+      <div class="split equal">
+        <div class="card" style="padding:24px"><h3>Conexão WhatsApp</h3><p id="waState" role="status">Verificando conexão…</p><p class="hint">Conexão por Evolution API. A instância precisa estar configurada no servidor. É uma integração não oficial, sujeita a desconexões e bloqueios.</p><button class="btn soft" onclick="connectWhatsApp()">Mostrar QR Code</button><div id="waQR"></div></div>
+        <div class="card" style="padding:24px"><h3>Destinos de publicação</h3><div class="toggleRow"><label for="waTelegram">Enviar ao Telegram configurado</label><input type="checkbox" id="waTelegram" class="switch"></div><div class="toggleRow"><label for="waEnabled">Enviar aos grupos WhatsApp selecionados</label><input type="checkbox" id="waEnabled" class="switch"></div><div class="field"><label for="waInterval">Intervalo entre grupos (10 a 120 segundos)</label><input type="number" id="waInterval" min="10" max="120" value="30"></div><p class="hint">O piloto automático e o horário silencioso continuam valendo para os dois canais.</p><button class="btn" onclick="saveChannels()">Salvar destinos</button></div>
+      </div>
+      <div class="card" style="padding:24px;margin-top:20px"><h3>Grupos disponíveis</h3><p class="hint">Escolha os grupos em que você tem autorização para divulgar ofertas. Máximo: 30 grupos.</p><button class="btn soft" onclick="loadWhatsAppGroups()">Carregar grupos da conta</button><div id="waGroups" style="margin-top:16px">Conecte a conta para carregar os grupos.</div></div>
+      <div class="card tableCard" style="margin-top:20px"><div class="cardHead"><h3>Últimos envios</h3></div><div class="tableWrap"><table><thead><tr><th>Oferta</th><th>Destino</th><th>Status</th><th>Conferência</th></tr></thead><tbody id="waDeliveries"></tbody></table></div></div>
+      <div class="card" style="padding:24px;margin-top:20px"><h3>Saúde da coleta Telegram</h3><p class="hint">Links são guardados antes de consultar a Shopee. Recuperação a cada minuto, até 200 mensagens por fonte em cada rodada. Na primeira conexão, são verificadas as 200 mais recentes.</p><div id="radarInbox"></div></div>
+    </section>
+
+    <section class="view" id="view-deals">
+      <div class="sectionHead"><div><span class="eyebrow">SELEÇÃO & DISTRIBUIÇÃO</span><h2>Ofertas que merecem atenção</h2><p>Da descoberta à publicação, cada oportunidade no lugar certo.</p></div><button class="btn soft" onclick="exportOffers()"><i data-icon="download"></i> Exportar página</button></div><div class="filterTabs"><button data-status="all" class="active" onclick="filterOffers('all')">Todas</button><button data-status="queued" onclick="filterOffers('queued')">Na fila</button><button data-status="published" onclick="filterOffers('published')">Publicadas</button><button data-status="failed" onclick="filterOffers('failed')">Precisam de atenção</button></div><div class="toolbar card">
+        <div class="search"><span>⌕</span><input id="offerSearch" aria-label="Buscar ofertas" placeholder="Buscar produto, loja ou origem…"></div>
+        <select id="offerStatus" aria-label="Status da oferta"><option value="all">Todos os status</option><option value="queued">Na fila</option><option value="published">Publicadas</option><option value="rejected">Rejeitadas</option><option value="failed">Falhas</option><option value="duplicate">Duplicadas</option></select>
+        <select id="offerSourceType" aria-label="Origem da oferta"><option value="all">Todas as origens</option><option value="telegram">Telegram</option><option value="shopee_radar">Radar Shopee</option><option value="manual">Manual</option></select>
+        <button class="btn soft" onclick="offerOffset=0;loadOffers()">Filtrar</button>
+        <button class="btn" onclick="showManual()">+ Oferta manual</button>
+      </div>
+      <div class="card tableCard">
+        <div class="cardHead"><div><span class="eyebrow">PIPELINE</span><h3>Ofertas</h3></div><div class="bulk"><span id="selectedCount">0 selecionadas</span><button class="btn tiny soft" onclick="bulkAction('retry')">Reenfileirar</button><button class="btn tiny danger" onclick="bulkAction('reject')">Rejeitar</button></div></div>
+        <div class="tableWrap"><table><thead><tr><th class="check"><input type="checkbox" id="selectAll"></th><th>Produto</th><th>Origem</th><th>Score</th><th>Trend</th><th>Status</th><th>Detectada</th><th>Ação</th></tr></thead><tbody id="offers"></tbody></table></div>
+        <div class="pager"><span id="offerCount">0 ofertas</span><div><button class="btn tiny soft" onclick="pageOffers(-1)">←</button><span id="offerPage">1</span><button class="btn tiny soft" onclick="pageOffers(1)">→</button></div></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-radar">
+      <div class="card sourceAdd"><div><span class="eyebrow">TELEGRAM INTELLIGENCE</span><h3>Adicionar fonte monitorada</h3><p class="hint">A conta leitora precisa ter acesso ao canal ou grupo.</p></div><div class="sourceForm"><input id="sourceName" placeholder="Nome da fonte"><input id="sourceRef" placeholder="@canal, t.me/canal ou -100…"><input id="sourceWeight" type="number" min="0.1" max="5" step="0.1" value="1"><button class="btn" onclick="addSource()">Adicionar</button></div></div>
+      <div class="card tableCard"><div class="cardHead"><div><span class="eyebrow">FONTES ATIVAS</span><h3>Radar Telegram</h3></div><span class="hint">Teste, importe histórico e acompanhe rendimento por fonte.</span></div><div class="tableWrap"><table><thead><tr><th>Fonte / diagnóstico</th><th>Peso</th><th>Detectadas</th><th>Publicadas</th><th>Conversões</th><th>Comissão</th><th>Ações</th></tr></thead><tbody id="sources"></tbody></table></div></div>
+    </section>
+
+    <section class="view" id="view-automation">
+      <div class="sectionHead"><div><span class="eyebrow">POLÍTICAS</span><h2>Automação e filtros</h2><p>Controle o que entra na fila, quando publica e como o sistema se protege.</p></div><button class="btn" onclick="saveSettings()">Salvar alterações</button></div>
+      <div id="settingsForm" class="settingsGroups"></div>
+    </section>
+
+    <section class="view" id="view-analytics">
+      <div class="sectionHead"><div><span class="eyebrow">INTELIGÊNCIA DE RECEITA</span><h2>Performance</h2><p>Aprenda quais fontes, categorias e templates realmente convertem.</p></div><select id="analyticsDays" onchange="loadAnalytics()"><option value="7">7 dias</option><option value="30" selected>30 dias</option><option value="90">90 dias</option></select></div>
+      <div class="analyticsGrid"><div class="card"><h3>Fontes</h3><div id="analyticsSources"></div></div><div class="card"><h3>Templates</h3><div id="analyticsTemplates"></div></div><div class="card"><h3>Categorias</h3><div id="analyticsCategories"></div></div><div class="card"><h3>Conversões</h3><div id="conversionBox"></div></div></div>
+    </section>
+
+    <section class="view" id="view-system">
+      <div class="sectionHead"><div><span class="eyebrow">OBSERVABILIDADE</span><h2>Sistema</h2><p>Saúde de componentes, integração e trilha de auditoria.</p></div></div>
+      <div id="systemCards" class="healthGrid"></div>
+      <div class="split equal"><div class="card"><div class="cardHead"><h3>Detalhes técnicos</h3></div><pre id="systemHealth"></pre></div><div class="card"><div class="cardHead"><h3>Auditoria</h3></div><div id="activityFull" class="activity tall"></div></div></div>
+    </section>
+  </main>
+</div>
+
+<dialog id="manualDialog"><form method="dialog" class="modal"><div class="modalHead"><div><span class="eyebrow">INGESTÃO MANUAL</span><h3>Analisar oferta</h3></div><button class="iconBtn" value="cancel">×</button></div><label>Link Shopee<input id="manualUrl" placeholder="https://s.shopee.com.br/..."></label><label>Origem<input id="manualSource" value="manual"></label><div class="modalActions"><button class="btn soft" value="cancel">Cancelar</button><button class="btn" type="button" onclick="manualIngest()">Analisar oferta</button></div></form></dialog>
+<dialog id="previewDialog" class="previewDialog" aria-labelledby="previewTitle"><div id="previewContent"></div></dialog>
+<dialog id="commandDialog" aria-label="Navegação rápida"><div class="commandModal"><div class="search"><i data-icon="search"></i><input id="commandSearch" placeholder="O que você quer fazer?" aria-label="Buscar comandos"><button class="linkBtn" onclick="document.getElementById('commandDialog').close()">Esc</button></div><div id="commandResults"></div><p class="hint">Acesse suas ferramentas sem sair do fluxo.</p></div></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"><b id="toastTitle"></b><span id="toastText"></span></div>
+<script src="/static/app.js?v=7.1"></script>
+<script src="/static/command-center.js?v=7.1"></script>
+</body></html>
