@@ -85,7 +85,7 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title='Shopee Deal Machine Enterprise', version='7.0.0-multichannel', lifespan=lifespan, docs_url=None, redoc_url=None)
+app = FastAPI(title='Shopee Deal Machine Enterprise', version='8.0.0-discovery', lifespan=lifespan, docs_url=None, redoc_url=None)
 app.mount('/static', StaticFiles(directory=Path(__file__).parent / 'static'), name='static')
 
 

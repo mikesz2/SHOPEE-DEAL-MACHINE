@@ -154,12 +154,13 @@ def test_telegram_ipc_queue_and_pending(tmp_path, monkeypatch):
     assert out['ok'] is True
 
 
-def test_v7_frontend_has_radar_and_operations():
+def test_v5_frontend_has_enterprise_radar_and_operations():
     from pathlib import Path
     root = Path(__file__).resolve().parents[1]
     html = (root / 'app' / 'static' / 'index.html').read_text(encoding='utf-8')
     js = (root / 'app' / 'static' / 'app.js').read_text(encoding='utf-8')
-    assert 'Deal Machine' in html
+    assert 'DEAL MACHINE / DISCOVERY STUDIO' in html
+    assert 'discoveryReport' in html
     assert 'Radar Telegram' in html
     assert 'Importar' in js
     assert '/import-history' in js

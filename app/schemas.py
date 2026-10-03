@@ -14,6 +14,9 @@ class RuntimeSettings(BaseModel):
     whatsapp_enabled: bool = False
     whatsapp_groups: list[str] = Field(default_factory=list, max_length=30)
     whatsapp_interval_seconds: int = Field(default=30, ge=10, le=120)
+    discovery_expand_keywords: bool = True
+    discovery_max_candidates: int = Field(default=40, ge=1, le=200)
+    discovery_shop_limit: int = Field(default=3, ge=1, le=50)
     radar_pages: int = Field(default=3, ge=1, le=5)
     max_offer_age_hours: int = Field(default=6, ge=1, le=72)
     require_quality_data: bool = True

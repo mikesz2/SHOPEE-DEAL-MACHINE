@@ -1,6 +1,10 @@
-# Shopee Deal Machine V7.1
+# Shopee Deal Machine V8 — Discovery Studio
 
 Plataforma de automação para **descoberta, curadoria e distribuição de ofertas da Shopee**, com painel web, radar de fontes no Telegram e publicação multicanal em **Telegram + WhatsApp**.
+
+## Novidades da V8
+
+Novo painel responsivo com identidade editorial e busca com expansão de termos, relevância, avaliação, vendas e diversidade de lojas. Consulte [ATUALIZACAO-V8.md](ATUALIZACAO-V8.md) para atualizar uma instalação existente e conhecer os limites da descoberta.
 
 ## O que o projeto faz
 
@@ -109,10 +113,15 @@ Este projeto demonstra experiência prática com:
 
 ## Screenshots
 
-Serão adicionados somente **prints reais do sistema em execução**. Não serão usados mockups ou imagens geradas.
+Prints reais da V8 em execução local, sem contas conectadas nem dados de operação:
+
+![Painel desktop](docs/screenshots/painel-v8.png)
+
+[Ver a versão móvel](docs/screenshots/painel-v8-mobile.png)
 
 ## Status
 
-**Versão:** 7.1  
+**Versão:** 8.0
+
 **Integrações:** Shopee, Telegram e WhatsApp  
 **Objetivo:** automação de ofertas com curadoria e distribuição multicanal.

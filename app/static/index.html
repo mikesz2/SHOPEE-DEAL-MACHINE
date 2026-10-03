@@ -2,16 +2,16 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#102a26">
+<meta name="theme-color" content="#f5f2ec">
 <title>Deal Machine · Command Center</title>
 <link rel="stylesheet" href="/static/app.css?v=6">
-<link rel="stylesheet" href="/static/refined.css?v=7.1">
+<link rel="stylesheet" href="/static/refined.css?v=8">
 </head>
 <body>
 <button class="sidebarBackdrop" id="sidebarBackdrop" aria-label="Fechar menu" hidden></button>
 <div class="shell">
   <aside class="sidebar" id="sidebar">
-    <div class="logo"><div class="logoMark">d<i data-icon="chart"></i></div><div><b>deal machine<span class="brandDot">.</span></b><span>Command Center · V7.1</span></div></div><div class="workspace"><span class="workspaceAvatar">M</span><div><b>Minha operação</b><small>Shopee + Telegram + WhatsApp</small></div><span class="workspaceArrow">⌄</span></div><span class="navCaption">SUA OPERAÇÃO</span>
+    <div class="logo"><div class="logoMark">d<i data-icon="chart"></i></div><div><b>deal machine<span class="brandDot">.</span></b><span>Studio de ofertas · V8</span></div></div><div class="workspace"><span class="workspaceAvatar">M</span><div><b>Minha operação</b><small>Shopee + Telegram + WhatsApp</small></div><span class="workspaceArrow">⌄</span></div><span class="navCaption">SUA OPERAÇÃO</span>
     <nav>
       <button class="nav active" data-view="dashboard"><i data-icon="dashboard"></i>Visão geral</button>
       <button class="nav" data-view="deals"><i data-icon="tag"></i>Ofertas</button>
@@ -21,7 +21,7 @@
       <button class="nav" data-view="analytics"><i data-icon="chart"></i>Performance</button>
       <button class="nav" data-view="system"><i data-icon="system"></i>Sistema</button>
     </nav>
-    <div class="sidebarNote"><i data-icon="bolt"></i><b>Uma operação. Mais controle.</b><p>Encontre, selecione e publique ofertas em um só lugar.</p><button onclick="openView('automation')">Ajustar automação <span>↗</span></button></div><div class="sidebarFoot"><div class="profileAvatar">OP</div><div><b>Administrador</b><div class="env">Command Center · V7.1</div></div><button class="ghost" onclick="logout()" aria-label="Sair da conta"><i data-icon="logout"></i></button></div>
+    <div class="sidebarNote"><i data-icon="bolt"></i><b>Uma operação. Mais controle.</b><p>Encontre, selecione e publique ofertas em um só lugar.</p><button onclick="openView('automation')">Ajustar automação <span>↗</span></button></div><div class="sidebarFoot"><div class="profileAvatar">OP</div><div><b>Administrador</b><div class="env">Studio de ofertas · V8</div></div><button class="ghost" onclick="logout()" aria-label="Sair da conta"><i data-icon="logout"></i></button></div>
   </aside>
 
   <main>
@@ -32,15 +32,15 @@
     </header>
     <div id="connectionNotice" class="connectionNotice" hidden role="status"></div>
     <section class="view active" id="view-dashboard">
-      <div class="welcome"><div><div class="eyebrow">SEU CENTRO DE COMANDO</div><h1>Encontre valor.<br><span>Transforme em resultado.</span></h1><p>Sua curadoria de ofertas, fontes e publicações. Tudo em uma só visão.</p></div><button class="btn" onclick="showManual()"><i data-icon="plus"></i> Nova oferta</button></div>
-      <div class="overviewBar"><span><span class="liveDot"></span> Visão da operação <small id="lastUpdated">Carregando dados…</small></span><span class="dateRange" id="dateRange">Últimos 7 dias</span></div>
+      <div class="welcome"><div><div class="eyebrow">DEAL MACHINE / DISCOVERY STUDIO</div><h1>O próximo achado<br><span>começa aqui.</span></h1><p>Descubra. Compare. Compartilhe. Uma nova perspectiva para sua operação de ofertas.</p></div><div class="heroActions"><button class="btn radarRun" onclick="runRadar()"><i data-icon="radar"></i> Descobrir produtos <span>↗</span></button><button class="linkBtn" onclick="showManual()">Adicionar um link manualmente +</button></div><div class="heroStamp" aria-hidden="true"><span>CURADORIA</span><b>dm.</b><span>EM MOVIMENTO ↗</span></div></div>
+      <div class="discoveryStrip"><div><span>01</span><b>Descoberta</b><small>Shopee + fontes Telegram</small></div><div><span>02</span><b>Curadoria</b><small>Relevância, qualidade e preço</small></div><div><span>03</span><b>Distribuição</b><small>Seus grupos, suas regras</small></div></div><div id="discoveryReport" role="status" aria-live="polite" hidden></div><div class="overviewBar"><span><span class="liveDot"></span> Visão da operação <small id="lastUpdated">Carregando dados…</small></span><span class="dateRange" id="dateRange">Últimos 7 dias</span></div>
       <div class="kpis" id="kpis"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
       <div class="dashboardMain">
-        <div class="card chartCard"><div class="cardHead"><div><h3>O ritmo da sua operação</h3><p class="hint">Ofertas detectadas e publicadas · últimos 7 dias (UTC)</p></div><div class="chartLegend"><span><i></i> Detectadas</span><span><i></i> Publicadas</span></div></div><div id="chartSummary" class="chartSummary"></div><div id="timeline" class="timeline"></div><div class="chartFooter"><span id="chartFootnote">Atualização automática</span><button class="linkBtn" onclick="openView('analytics')">Explorar performance <span>↗</span></button></div></div>
-        <div class="commandCard"><div class="commandTop"><span class="eyebrow">PILOTO AUTOMÁTICO</span><i data-icon="bolt"></i></div><h2>Seu próximo movimento,<br>sob controle.</h2><p>Da descoberta aos seus grupos, com suas regras de qualidade.</p><div id="automationState"></div><button id="automationToggle" class="btn commandBtn" onclick="toggleAutomation()" disabled>Carregando…</button><button class="commandLink" onclick="openView('automation')">Personalizar regras <span>↗</span></button></div>
+        <div class="card chartCard"><div class="cardHead"><div><h3>O pulso da operação</h3><p class="hint">Ofertas detectadas e publicadas · últimos 7 dias (UTC)</p></div><div class="chartLegend"><span><i></i> Detectadas</span><span><i></i> Publicadas</span></div></div><div id="chartSummary" class="chartSummary"></div><div id="timeline" class="timeline"></div><div class="chartFooter"><span id="chartFootnote">Atualização automática</span><button class="linkBtn" onclick="openView('analytics')">Explorar performance <span>↗</span></button></div></div>
+        <div class="commandCard"><div class="commandTop"><span class="eyebrow">CONTROLE DE PUBLICAÇÃO</span><i data-icon="bolt"></i></div><h2>Você define<br>o ritmo.</h2><p>Da descoberta aos seus grupos, com suas regras de qualidade.</p><div id="automationState"></div><button id="automationToggle" class="btn commandBtn" onclick="toggleAutomation()" disabled>Carregando…</button><button class="commandLink" onclick="openView('automation')">Personalizar regras <span>↗</span></button></div>
       </div>
       <div id="insights" class="insights"></div>
-      <div class="sectionHead opportunityHead"><div><div class="eyebrow">CURADORIA DA FILA</div><h2>Próximas oportunidades</h2><p>As ofertas de maior score entre as 60 mais recentes da fila.</p></div><button class="linkBtn" onclick="filterOffers('queued')">Ver toda a fila <span>→</span></button></div>
+      <div class="sectionHead opportunityHead"><div><div class="eyebrow">CURADORIA DA FILA</div><h2>Na sua bancada.</h2><p>As ofertas de maior score entre as 60 mais recentes da fila.</p></div><button class="linkBtn" onclick="filterOffers('queued')">Ver toda a fila <span>→</span></button></div>
       <div id="spotlight" class="spotlight"><div class="emptyState">Carregando oportunidades…</div></div>
       <div class="split equal bottomCards"><div class="card"><div class="cardHead"><div><h3>Fontes que fazem a diferença</h3><p class="hint">Comissão acumulada por fonte</p></div><button class="linkBtn" onclick="openView('radar')">Gerenciar ↗</button></div><div id="topSources"></div></div><div class="card"><div class="cardHead"><div><h3>Nos bastidores</h3><p class="hint">Últimos eventos da operação</p></div><button class="linkBtn" onclick="openView('system')">Ver tudo ↗</button></div><div id="activityMini" class="activity"></div></div></div>
       <footer class="dashboardFooter"><span>DEAL MACHINE <b>ENTERPRISE</b></span><span>Clareza para decidir. Controle para crescer.</span></footer>
@@ -99,6 +99,6 @@
 <dialog id="previewDialog" class="previewDialog" aria-labelledby="previewTitle"><div id="previewContent"></div></dialog>
 <dialog id="commandDialog" aria-label="Navegação rápida"><div class="commandModal"><div class="search"><i data-icon="search"></i><input id="commandSearch" placeholder="O que você quer fazer?" aria-label="Buscar comandos"><button class="linkBtn" onclick="document.getElementById('commandDialog').close()">Esc</button></div><div id="commandResults"></div><p class="hint">Acesse suas ferramentas sem sair do fluxo.</p></div></dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"><b id="toastTitle"></b><span id="toastText"></span></div>
-<script src="/static/app.js?v=7.1"></script>
-<script src="/static/command-center.js?v=7.1"></script>
+<script src="/static/app.js?v=8"></script>
+<script src="/static/command-center.js?v=8"></script>
 </body></html>
