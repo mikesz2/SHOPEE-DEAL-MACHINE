@@ -81,8 +81,29 @@ async def lifespan(app: FastAPI):
     if settings.is_production and settings.app_require_auth and not settings.admin_password:
         raise RuntimeError('ADMIN_PASSWORD é obrigatório em produção quando APP_REQUIRE_AUTH=true')
     Base.metadata.create_all(bind=engine)
+
+    # DisCloud/Docker starts only Uvicorn, so keep the automation worker
+    # in the same process as the web app.
+    worker_task = None
+    try:
+        from app.worker import run as run_worker
+        worker_task = asyncio.create_task(run_worker(), name='sdm-worker')
+        log.info('Worker de automação iniciado junto com a aplicação web')
+    except Exception:
+        log.exception('Falha ao iniciar o worker de automação')
+        raise
+
     heartbeat('web', {'time': datetime.utcnow().isoformat() + 'Z'}, ttl=180)
-    yield
+    try:
+        yield
+    finally:
+        if worker_task:
+            worker_task.cancel()
+            try:
+                await worker_task
+            except asyncio.CancelledError:
+                pass
+            log.info('Worker de automação encerrado')
 
 
 app = FastAPI(title='Shopee Deal Machine Enterprise', version='8.0.0-discovery', lifespan=lifespan, docs_url=None, redoc_url=None)
