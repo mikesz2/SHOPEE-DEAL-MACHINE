@@ -109,6 +109,8 @@ async def ingest_node(db: Session, node: dict, source_type: str, source_ref: str
     ds = round(max(0, min(100, ds + evidence['score_adjustment'])), 1)
     final = combined_score(ds, tr)
     memory = remember(db, product, source_ref or source_type, 1, final)
+    # Never let repeated discovery events outrank genuinely new products forever.
+    final = discovery_priority(db, product.id, final)
     final = discovery_priority(db, product.id, final)
     reason = blocked_reason(product, runtime)
     active = db.query(OfferEvent).filter(OfferEvent.product_id == product.id, OfferEvent.status.in_(['queued','reserved'])).first()
