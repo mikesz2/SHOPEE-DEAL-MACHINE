@@ -11,6 +11,7 @@ from app.services.product_utils import normalize_name, categorize
 from app.services.filters import priority_boost, blocked_reason
 from app.services.settings_store import load_runtime_settings
 from app.services.analytics import source_learning_multiplier
+from app.services.discovery_memory import remember, discovery_priority
 
 
 def fnum(v):
@@ -107,6 +108,8 @@ async def ingest_node(db: Session, node: dict, source_type: str, source_ref: str
     evidence = price_evidence(db, product)
     ds = round(max(0, min(100, ds + evidence['score_adjustment'])), 1)
     final = combined_score(ds, tr)
+    memory = remember(db, product, source_ref or source_type, 1, final)
+    final = discovery_priority(db, product.id, final)
     reason = blocked_reason(product, runtime)
     active = db.query(OfferEvent).filter(OfferEvent.product_id == product.id, OfferEvent.status.in_(['queued','reserved'])).first()
     status = 'rejected' if reason else ('duplicate' if active else 'queued')
