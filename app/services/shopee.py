@@ -181,9 +181,9 @@ class ShopeeAffiliateClient:
     async def get_conversions(self, days: int = 7, limit: int = 200) -> list[dict]:
         now = int(time.time())
         start = now - max(1, min(days, 90)) * 86400
-        query = '''
-        query ConversionReport($start: Int64, $end: Int64, $limit: Int) {
-          conversionReport(purchaseTimeStart: $start, purchaseTimeEnd: $end, limit: $limit) {
+        query = f'''
+        query ConversionReport {{
+          conversionReport(purchaseTimeStart: {start}, purchaseTimeEnd: {now}, limit: {min(limit, 500)}) {{
             nodes {
               purchaseTime clickTime conversionId totalCommission buyerType device utmContent
               orders {
@@ -195,5 +195,5 @@ class ShopeeAffiliateClient:
           }
         }
         '''
-        data = await self._graphql(query, {'start': start, 'end': now, 'limit': min(limit, 500)})
+        data = await self._graphql(query)
         return (data.get('conversionReport') or {}).get('nodes') or []
