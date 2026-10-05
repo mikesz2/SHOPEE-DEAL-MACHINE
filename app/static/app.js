@@ -66,6 +66,29 @@ async function bulkAction(action){if(!selected.size)return toast('Selecione pelo
 function showManual(){ $('#manualDialog').showModal() }
 async function manualIngest(){try{let d=await api('/api/manual/ingest',{method:'POST',body:JSON.stringify({url:$('#manualUrl').value,source_ref:$('#manualSource').value})});toast(`Oferta #${d.offer_id}: ${statusLabel[d.status]||d.status} · score ${Number(d.score).toFixed(1)}${d.reason?' · '+d.reason:''}.`);$('#manualDialog').close();$('#manualUrl').value='';await refreshAll()}catch(e){toast(e.message,true)}}
 let radarRunning=false;
+async function loadRadarPauseState(){
+ try{
+  const d=await api('/api/radar/status');
+  const b=$('#radarPauseBtn');
+  if(b){b.textContent=d.paused?'Retomar radar':'Pausar radar';b.classList.toggle('danger',!d.paused);b.classList.toggle('soft',d.paused);}
+ }catch{}
+}
+async function toggleRadarPause(){
+ try{
+  const d=await api((await api('/api/radar/status')).paused?'/api/radar/resume':'/api/radar/pause',{method:'POST'});
+  toast(d.paused?'Radar pausado. A fila atual continua intacta.':'Radar retomado.');
+  loadRadarPauseState();
+ }catch(e){toast(e.message,true)}
+}
+async function clearOfferQueue(){
+ const d=await api('/api/offers?limit=1&offset=0&status=queued');
+ if(!d.total)return toast('A fila já está vazia.');
+ if(!confirm('Excluir TODAS as ofertas atualmente na fila? Elas sairão da fila, mas o histórico publicado será preservado.'))return;
+ try{
+  const r=await api('/api/offers/queue/clear',{method:'POST'});
+  selected.clear(); toast(r.changed+' ofertas removidas da fila.'); await loadOffers(); await loadDashboard();
+ }catch(e){toast(e.message,true)}
+}
 async function runRadar(){
  if(radarRunning)return;
  radarRunning=true;document.querySelectorAll('.radarRun').forEach(b=>b.disabled=true);
@@ -75,7 +98,7 @@ async function runRadar(){
   const d=await api('/api/radar/run',{method:'POST'});
   const summary=d.reason||`${d.created||0} novas ofertas na fila · ${d.scanned||0} resultados consultados · ${d.eligible||0} produtos elegíveis.`;
   if(report){report.className=d.ok?'':'warning';report.innerHTML=`<b>${esc(summary)}</b>`+(d.queries!=null?`<br>${d.queries} consultas · ${d.duplicates||0} repetições encontradas. `:'')+(d.limited?'Busca limitada por tempo ou volume; novas rodadas continuam a exploração. ':'')+(d.rejections&&Object.keys(d.rejections).length?'<br>Filtros: '+Object.entries(d.rejections).map(([k,v])=>`${esc(k)} (${v})`).join(' · '):'')+(d.errors?.length?'<br>'+d.errors.map(esc).join(' '):'');}
-  toast(summary,!d.ok);await refreshAll();
+  toast(summary,!d.ok);await refreshAll();loadRadarPauseState();
  }catch(e){if(report){report.textContent=e.message;report.className='warning';}toast(e.message,true)}
  finally{radarRunning=false;document.querySelectorAll('.radarRun').forEach(b=>b.disabled=false);}
 }
@@ -156,3 +179,5 @@ async function loadInbox(){
   const d=await api('/api/radar/quality');
   $('#radarInbox').innerHTML=`<p>Pendentes: <b>${d.inbox.pending||0}</b> · Processados: <b>${d.inbox.done||0}</b> · Falhas: <b>${d.inbox.failed||0}</b> · Expirados: <b>${d.inbox.expired||0}</b></p>`+d.sources.map(s=>`<p>${esc(s.source)} · última mensagem #${s.last_message_id} · ${dt(s.updated_at)}</p>`).join('');
 }
+
+loadRadarPauseState();
