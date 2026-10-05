@@ -1,9 +1,11 @@
+import asyncio
 import base64
 import secrets
 import hashlib
 import hmac
 import time
 import json
+import logging
 import uuid
 from collections import defaultdict, deque
 from contextlib import asynccontextmanager
@@ -28,6 +30,8 @@ from app.services.conversions import sync_conversions
 from app.services.redis_store import health as redis_health, get_redis, heartbeat
 from app.services.telegram_ipc import queue_command, read_result
 from app.services.audit import safe_record
+
+log = logging.getLogger('app')
 
 
 
