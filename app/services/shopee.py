@@ -5,6 +5,7 @@ import logging
 import random
 import re
 import time
+from urllib.parse import urlparse
 import httpx
 from app.config import settings
 from app.services.url_utils import extract_identity, resolve_url
@@ -70,6 +71,11 @@ class ShopeeAffiliateClient:
         return 'invalid sub id' in msg or ('11001' in msg and 'sub' in msg)
 
     async def generate_short_link(self, origin_url: str, sub_ids: list[str] | None = None) -> str:
+        if not self.configured:
+            raise ShopeeApiError('Credenciais da Shopee não configuradas')
+        origin = str(origin_url or '').strip()
+        if not origin:
+            raise ShopeeApiError('Produto sem URL de origem')
         origin_literal = json.dumps(str(origin_url), ensure_ascii=False)
         safe_ids: list[str] = []
         for value in (sub_ids or [])[:5]:
@@ -89,7 +95,13 @@ class ShopeeAffiliateClient:
             }}
             '''
             data = await self._graphql(query)
-            return data['generateShortLink']['shortLink']
+            short_link = str(data['generateShortLink']['shortLink'] or '').strip()
+            parsed = urlparse(short_link)
+            if not short_link or parsed.scheme not in {'http', 'https'} or not parsed.netloc:
+                raise ShopeeApiError('Shopee não retornou um link de afiliado válido')
+            if short_link.rstrip('/') == origin.rstrip('/'):
+                raise ShopeeApiError('Shopee retornou o link original em vez do link de afiliado')
+            return short_link
 
         try:
             return await _call(safe_ids)
