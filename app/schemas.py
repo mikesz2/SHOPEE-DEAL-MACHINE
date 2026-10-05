@@ -9,7 +9,7 @@ class SourceIn(BaseModel):
 
 
 class RuntimeSettings(BaseModel):
-    auto_publish: bool = False
+    auto_publish: bool = True
     telegram_publish_enabled: bool = True
     whatsapp_enabled: bool = False
     whatsapp_groups: list[str] = Field(default_factory=list, max_length=30)
