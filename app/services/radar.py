@@ -35,7 +35,7 @@ async def run_shopee_radar(db: Session) -> dict:
         rotation = datetime.utcnow().hour % len(plan)
         plan = plan[rotation:] + plan[:rotation]
         candidates, seen, exhausted = {}, set(), set()
-        deadline = time.monotonic() + 100
+        deadline = time.monotonic() + 115
         stop = False
         # Breadth first: all topics get page one before deeper pagination.
         for page in range(1, runtime.radar_pages + 1):
@@ -43,7 +43,7 @@ async def run_shopee_radar(db: Session) -> dict:
                 if query in exhausted:
                     continue
                 remaining = deadline - time.monotonic()
-                if remaining <= 1 or report['queries'] >= 36:
+                if remaining <= 1 or report['queries'] >= runtime.discovery_max_queries:
                     report['limited'] = True
                     stop = True
                     break
