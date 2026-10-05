@@ -15,7 +15,7 @@ from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func, text, or_
 from app.db import Base, engine, get_db
-from app.models import Source, Product, OfferEvent, Publication, Conversion, AuditEvent
+from app.models import Source, Product, OfferEvent, Publication, Conversion, AuditEvent, AppSetting
 from app.schemas import SourceIn, RuntimeSettings, ManualIngest, BulkOfferAction
 from app.config import settings
 from app.services.settings_store import load_runtime_settings, save_runtime_settings
@@ -381,6 +381,39 @@ async def manual_ingest(payload: ManualIngest, db: Session = Depends(get_db)):
         raise HTTPException(400, str(ex))
 
 
+@app.get('/api/radar/status')
+def radar_status(db: Session = Depends(get_db)):
+    row = db.get(AppSetting, 'shopee_radar_paused')
+    paused = bool(row and str(row.value).lower() == 'true')
+    return {'paused': paused}
+
+
+@app.post('/api/radar/pause')
+def radar_pause(db: Session = Depends(get_db)):
+    row = db.get(AppSetting, 'shopee_radar_paused')
+    if not row:
+        row = AppSetting(key='shopee_radar_paused', value='true')
+        db.add(row)
+    else:
+        row.value = 'true'
+    db.commit()
+    safe_record(db, 'radar.paused', 'Radar Shopee pausado pelo administrador', actor='admin')
+    return {'ok': True, 'paused': True}
+
+
+@app.post('/api/radar/resume')
+def radar_resume(db: Session = Depends(get_db)):
+    row = db.get(AppSetting, 'shopee_radar_paused')
+    if not row:
+        row = AppSetting(key='shopee_radar_paused', value='false')
+        db.add(row)
+    else:
+        row.value = 'false'
+    db.commit()
+    safe_record(db, 'radar.resumed', 'Radar Shopee retomado pelo administrador', actor='admin')
+    return {'ok': True, 'paused': False}
+
+
 @app.post('/api/radar/run')
 async def radar_run(db: Session = Depends(get_db)):
     try:
@@ -395,6 +428,19 @@ async def conversions_sync(db: Session = Depends(get_db)):
         return await sync_conversions(db, 30)
     except Exception as ex:
         raise HTTPException(400, str(ex))
+
+
+@app.post('/api/offers/queue/clear')
+def clear_offer_queue(db: Session = Depends(get_db)):
+    rows = db.query(OfferEvent).filter(OfferEvent.status == 'queued').all()
+    changed = len(rows)
+    for event in rows:
+        event.status = 'rejected'
+        event.reject_reason = 'Fila limpa manualmente pelo administrador'
+        event.updated_at = datetime.utcnow()
+    db.commit()
+    safe_record(db, 'offers.queue_cleared', f'Fila de ofertas limpa: {changed} ofertas removidas da fila', actor='admin', context={'changed': changed})
+    return {'ok': True, 'changed': changed}
 
 
 @app.post('/api/offers/{offer_id}/publish')
