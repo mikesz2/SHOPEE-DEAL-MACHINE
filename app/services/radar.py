@@ -10,6 +10,7 @@ from app.services.settings_store import load_runtime_settings
 from app.services.ingest import ingest_node
 from app.services.redis_store import distributed_lock
 from app.services.discovery import query_plan, evaluate, diverse_order
+from app.services.discovery_matrix import expand_category
 
 log = logging.getLogger(__name__)
 
@@ -29,13 +30,18 @@ async def run_shopee_radar(db: Session) -> dict:
         if not room:
             return {'ok': False, 'reason': 'Fila no limite configurado; aguarde as publicações', 'created': 0}
         plan = query_plan(runtime.radar_keywords, runtime.discovery_expand_keywords, datetime.utcnow().hour)
+        # Add a fresh exploration pass using category-specific long-tail queries.
+        expanded = []
+        for q in runtime.radar_keywords.split(','):
+            expanded.extend((x, q.strip()) for x in expand_category(q.strip()))
+        plan = list(dict.fromkeys(plan + expanded))
         if not plan:
             return {'ok': False, 'reason': 'Cadastre palavras-chave em Automação', 'created': 0}
         # Rotate the starting topic so bounded calls do not starve later topics.
         rotation = datetime.utcnow().hour % len(plan)
         plan = plan[rotation:] + plan[:rotation]
         candidates, seen, exhausted = {}, set(), set()
-        deadline = time.monotonic() + 100
+        deadline = time.monotonic() + 115
         stop = False
         # Breadth first: all topics get page one before deeper pagination.
         for page in range(1, runtime.radar_pages + 1):
@@ -43,7 +49,7 @@ async def run_shopee_radar(db: Session) -> dict:
                 if query in exhausted:
                     continue
                 remaining = deadline - time.monotonic()
-                if remaining <= 1 or report['queries'] >= 36:
+                if remaining <= 1 or report['queries'] >= runtime.discovery_max_queries:
                     report['limited'] = True
                     stop = True
                     break

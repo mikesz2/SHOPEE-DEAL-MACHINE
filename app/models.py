@@ -167,3 +167,20 @@ class AuditEvent(Base):
     message: Mapped[str] = mapped_column(Text)
     context_json: Mapped[str] = mapped_column(Text, default='{}')
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, index=True)
+
+
+class DiscoveryMemory(Base):
+    __tablename__ = 'discovery_memory'
+    __table_args__ = (UniqueConstraint('product_id', name='uq_discovery_product'), Index('ix_discovery_last_seen','last_seen_at'))
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    product_id: Mapped[int] = mapped_column(ForeignKey('products.id', ondelete='CASCADE'), index=True)
+    first_seen_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    last_seen_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+    times_seen: Mapped[int] = mapped_column(Integer, default=1)
+    query_hits: Mapped[int] = mapped_column(Integer, default=1)
+    unique_queries: Mapped[int] = mapped_column(Integer, default=1)
+    unique_sorts: Mapped[int] = mapped_column(Integer, default=1)
+    novelty_score: Mapped[float] = mapped_column(Float, default=100)
+    best_score: Mapped[float] = mapped_column(Float, default=0)
+    last_query: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    last_sort: Mapped[int | None] = mapped_column(Integer, nullable=True)

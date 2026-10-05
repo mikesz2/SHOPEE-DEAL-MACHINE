@@ -15,9 +15,12 @@ class RuntimeSettings(BaseModel):
     whatsapp_groups: list[str] = Field(default_factory=list, max_length=30)
     whatsapp_interval_seconds: int = Field(default=30, ge=10, le=120)
     discovery_expand_keywords: bool = True
-    discovery_max_candidates: int = Field(default=40, ge=1, le=200)
-    discovery_shop_limit: int = Field(default=3, ge=1, le=50)
-    radar_pages: int = Field(default=3, ge=1, le=5)
+    discovery_max_candidates: int = Field(default=120, ge=1, le=500)
+    discovery_shop_limit: int = Field(default=2, ge=1, le=50)
+    radar_pages: int = Field(default=5, ge=1, le=10)
+    discovery_max_queries: int = Field(default=120, ge=12, le=300)
+    discovery_concurrency: int = Field(default=6, ge=1, le=12)
+    discovery_sort_modes: str = '1,2,3,4,5'
     max_offer_age_hours: int = Field(default=6, ge=1, le=72)
     require_quality_data: bool = True
     post_interval_minutes: int = Field(default=25, ge=1, le=1440)
@@ -31,14 +34,14 @@ class RuntimeSettings(BaseModel):
     min_score: float = Field(default=62, ge=0, le=100)
     min_discount: float = Field(default=10, ge=0, le=100)
     min_rating: float = Field(default=4.2, ge=0, le=5)
-    min_sales: int = Field(default=50, ge=0)
+    min_sales: int = Field(default=20, ge=0)
     min_commission_rate: float = Field(default=0, ge=0, le=100)
     cooldown_days: int = Field(default=7, ge=0, le=365)
     similarity_cooldown_hours: int = Field(default=12, ge=0, le=720)
     similarity_threshold: float = Field(default=0.72, ge=0, le=1)
 
     radar_keywords: str = 'eletrônicos,casa,cozinha,beleza,gamer,celular,ferramentas'
-    max_products_per_keyword: int = Field(default=12, ge=1, le=50)
+    max_products_per_keyword: int = Field(default=40, ge=1, le=50)
 
     allowed_templates: list[str] = ['default', 'urgente', 'clean']
     template_learning: bool = True
