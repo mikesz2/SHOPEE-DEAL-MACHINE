@@ -18,6 +18,10 @@ log = logging.getLogger(__name__)
 async def run_shopee_radar(db: Session) -> dict:
     runtime = load_runtime_settings(db)
     client = ShopeeAffiliateClient()
+    from app.models import AppSetting
+    paused = db.get(AppSetting, 'shopee_radar_paused')
+    if paused and str(paused.value).lower() == 'true':
+        return {'ok': True, 'paused': True, 'reason': 'Radar Shopee pausado pelo administrador', 'created': 0}
     if not client.configured:
         return {'ok': False, 'reason': 'Shopee não configurada', 'created': 0}
     report = dict(ok=True, created=0, scanned=0, unique=0, eligible=0, duplicates=0, queries=0, errors=[])
