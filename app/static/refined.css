@@ -50,3 +50,37 @@ body{background:var(--bg)}.shell{grid-template-columns:224px minmax(0,1fr)}main{
 @media(max-width:1150px){main{padding:0 24px 28px}.shell{grid-template-columns:205px minmax(0,1fr)}.welcome{align-items:start;flex-direction:column;gap:8px}.heroActions{margin-left:0;flex-direction:row;align-items:center}.welcome h1{font-size:48px}.dashboardMain{grid-template-columns:1fr}.commandCard h2 br{display:none}.kpi:nth-child(2){border:0}.kpi:nth-child(-n+2){border-bottom:1px solid var(--line)}.discoveryStrip small{font-size:9px}.discoveryStrip{gap:8px}.discoveryStrip>div{gap:5px}}
 @media(max-width:780px){.shell{grid-template-columns:1fr}.sidebar{width:246px}.welcome{padding-top:15px}.welcome h1{font-size:49px}.heroActions .btn{margin:0}.discoveryStrip{padding-bottom:20px}.commandCard h2{font-size:34px}.kpis{gap:0}.kpi .value{font-size:29px}}
 @media(max-width:540px){main{padding:0 16px 25px}.welcome{padding:15px 0 25px}.welcome h1{font-size:45px;letter-spacing:-2px}.heroActions{align-items:start;flex-direction:column;gap:14px;margin-top:20px}.welcome p{font-size:12px}.discoveryStrip>div{display:flex;flex-direction:column;gap:7px}.discoveryStrip span{font-size:22px}.discoveryStrip b{font-size:10px}.discoveryStrip small{font-size:9px;line-height:1.5}.kpi{padding:18px 14px}.kpi .value{font-size:26px}.kpi .label{font-size:10px}.sectionHead h2{font-size:29px}.commandCard h2{font-size:34px}.dealArt{border-radius:3px}.topbar{margin-bottom:12px}}
+
+/* Radar category selector */
+.categoryPicker{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-top:8px;
+}
+.categoryChip{
+  appearance:none;
+  border:1px solid rgba(20,20,20,.14);
+  border-radius:12px;
+  background:#fff;
+  color:inherit;
+  min-height:44px;
+  padding:10px 12px;
+  font:inherit;
+  font-weight:650;
+  cursor:pointer;
+  text-align:center;
+  transition:transform .12s ease,border-color .12s ease,background .12s ease,box-shadow .12s ease;
+}
+.categoryChip:hover{transform:translateY(-1px);border-color:rgba(20,20,20,.28)}
+.categoryChip.selected{
+  border-color:#111;
+  background:#111;
+  color:#fff;
+  box-shadow:0 4px 12px rgba(0,0,0,.12);
+}
+.categoryPicker input[type="hidden"]{display:none!important}
+.categoryPicker .hint{grid-column:1/-1}
+@media (max-width:720px){
+  .categoryPicker{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
