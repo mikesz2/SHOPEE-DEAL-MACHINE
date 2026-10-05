@@ -100,6 +100,28 @@ async def lifespan(app: FastAPI):
             db.add(AppSetting(key=migration_key, value=json.dumps(True)))
             db.commit()
             log.info('Publicação automática habilitada pela migração inicial')
+
+        # Queue-drain migration: older installs used a 25-minute interval and
+        # a 6-hour offer age, which could leave an already-built queue looking
+        # stuck. Keep the normal cadence short enough to drain the queue and
+        # allow queued offers to survive normal deployment/restart delays.
+        queue_migration_key = 'automatic_queue_drain_migrated_v1'
+        if not db.get(AppSetting, queue_migration_key):
+            interval = db.get(AppSetting, 'post_interval_minutes')
+            if interval is None or str(interval.value) in {'25', '25.0'}:
+                if interval:
+                    interval.value = json.dumps(5)
+                else:
+                    db.add(AppSetting(key='post_interval_minutes', value=json.dumps(5)))
+            age = db.get(AppSetting, 'max_offer_age_hours')
+            if age is None or str(age.value) in {'6', '6.0'}:
+                if age:
+                    age.value = json.dumps(24)
+                else:
+                    db.add(AppSetting(key='max_offer_age_hours', value=json.dumps(24)))
+            db.add(AppSetting(key=queue_migration_key, value=json.dumps(True)))
+            db.commit()
+            log.info('Cadência automática ajustada para drenar a fila (5 min / 24h)')
     finally:
         db.close()
 
