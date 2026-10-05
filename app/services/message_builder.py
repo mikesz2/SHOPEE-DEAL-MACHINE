@@ -53,7 +53,7 @@ def _facts(product):
 
     rating = product.get("ratingStar") if product.get("ratingStar") is not None else product.get("rating")
     sales = product.get("sales")
-    return name, price, normalize_pct(discount), original, rating, sales
+    return name, price, normalize_pct(discount), original, original_estimated, rating, sales
 
 
 def _social_proof(rating, sales):
@@ -72,7 +72,7 @@ def _social_proof(rating, sales):
 
 
 def build_offer_caption(product, affiliate_url: str, score: float, source_type: str, style: str = "default") -> str:
-    name, price, discount, original, rating, sales = _facts(product)
+    name, price, discount, original, original_estimated, rating, sales = _facts(product)
     safe_url = html.escape(str(affiliate_url or ""), quote=False)
     social_proof = _social_proof(rating, sales)
 
