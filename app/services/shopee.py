@@ -179,21 +179,7 @@ class ShopeeAffiliateClient:
             return {'shopId': shop_id, 'itemId': item_id, 'productName': f'Produto Shopee {item_id}', 'productLink': final_url}
 
     async def get_conversions(self, days: int = 7, limit: int = 200) -> list[dict]:
-        now = int(time.time())
-        start = now - max(1, min(days, 90)) * 86400
-        query = f'''
-        query ConversionReport {{
-          conversionReport(purchaseTimeStart: {start}, purchaseTimeEnd: {now}, limit: {min(limit, 500)}) {{
-            nodes {
-              purchaseTime clickTime conversionId totalCommission buyerType device utmContent
-              orders {
-                orderId orderStatus
-                items { itemId itemName shopName itemPrice qty itemTotalCommission attributionType }
-              }
-            }
-            pageInfo { limit hasNextPage scrollId }
-          }
-        }
-        '''
-        data = await self._graphql(query)
-        return (data.get('conversionReport') or {}).get('nodes') or []
+        # Temporariamente desativado: o endpoint de conversões da Shopee BR
+        # está retornando code 10010 (wrong type). Isso não afeta o publicador.
+        log.info('Sincronização de conversões temporariamente desativada')
+        return []
