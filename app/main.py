@@ -16,7 +16,7 @@ from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, Red
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func, text, or_
-from app.db import Base, engine, get_db
+from app.db import Base, engine, get_db, SessionLocal
 from app.models import Source, Product, OfferEvent, Publication, Conversion, AuditEvent, AppSetting
 from app.schemas import SourceIn, RuntimeSettings, ManualIngest, BulkOfferAction
 from app.config import settings
@@ -85,6 +85,23 @@ async def lifespan(app: FastAPI):
     if settings.is_production and settings.app_require_auth and not settings.admin_password:
         raise RuntimeError('ADMIN_PASSWORD é obrigatório em produção quando APP_REQUIRE_AUTH=true')
     Base.metadata.create_all(bind=engine)
+
+    # One-time migration: older installations used auto_publish=false by default.
+    # Enable automatic publishing once; after this migration the dashboard setting remains authoritative.
+    db = SessionLocal()
+    try:
+        migration_key = 'auto_publish_default_migrated_v1'
+        if not db.get(AppSetting, migration_key):
+            row = db.get(AppSetting, 'auto_publish')
+            if row:
+                row.value = json.dumps(True)
+            else:
+                db.add(AppSetting(key='auto_publish', value=json.dumps(True)))
+            db.add(AppSetting(key=migration_key, value=json.dumps(True)))
+            db.commit()
+            log.info('Publicação automática habilitada pela migração inicial')
+    finally:
+        db.close()
 
     # DisCloud/Docker starts only Uvicorn, so keep the automation worker
     # in the same process as the web app.
