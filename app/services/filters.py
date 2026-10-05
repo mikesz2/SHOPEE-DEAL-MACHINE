@@ -47,17 +47,6 @@ def in_quiet_hours(runtime) -> bool:
     return hour >= start or hour < end
 
 
-def category_quota_exceeded(db: Session, product: Product, runtime) -> bool:
-    limit = int(runtime.category_daily_limits.get(product.category, runtime.category_daily_limits.get('outros', 10)))
-    if limit <= 0:
-        return True
-    cutoff = datetime.utcnow() - timedelta(hours=24)
-    count = (db.query(func.count(func.distinct(Publication.offer_event_id))).join(OfferEvent).join(Product, OfferEvent.product_id == Product.id)
-             .filter(Publication.status == 'published', Publication.published_at >= cutoff, Product.category == product.category)
-             .scalar())
-    return count >= limit
-
-
 def too_many_same_category(db: Session, product: Product, runtime) -> bool:
     rows = (db.query(Product.category, OfferEvent.id).join(OfferEvent, OfferEvent.product_id == Product.id)
             .join(Publication, Publication.offer_event_id == OfferEvent.id)
