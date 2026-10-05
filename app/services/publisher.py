@@ -164,6 +164,8 @@ async def publish_reserved_event(db: Session, event: OfferEvent, force: bool = F
             url = await client.generate_short_link(product.product_url,
                 ['whatsapp' if is_wa else 'telegram', safe_subid(event.source_ref or event.source_type),
                  pub.tracking_key, safe_subid(product.category), safe_subid(template)])
+            if not url or url.rstrip('/') == str(product.product_url or '').rstrip('/'):
+                raise RuntimeError('Link de afiliado Shopee não foi gerado; publicação bloqueada')
             caption = build_offer_caption({'productName':product.name, 'price':product.price,
                 'priceMin':product.price, 'original_price':None, 'discount_rate':product.discount_rate,
                 'rating':product.rating, 'sales':product.sales}, url, event.final_score, event.source_type, template)
