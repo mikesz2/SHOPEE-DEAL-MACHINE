@@ -182,7 +182,7 @@ class ShopeeAffiliateClient:
         now = int(time.time())
         start = now - max(1, min(days, 90)) * 86400
         query = '''
-        query ConversionReport($start: Int, $end: Int, $limit: Int) {
+        query ConversionReport($start: Int64, $end: Int64, $limit: Int) {
           conversionReport(purchaseTimeStart: $start, purchaseTimeEnd: $end, limit: $limit) {
             nodes {
               purchaseTime clickTime conversionId totalCommission buyerType device utmContent
