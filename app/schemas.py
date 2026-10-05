@@ -41,7 +41,7 @@ class RuntimeSettings(BaseModel):
     similarity_threshold: float = Field(default=0.72, ge=0, le=1)
 
     radar_keywords: str = 'eletrônicos,casa,cozinha,beleza,gamer,celular,ferramentas'
-    max_products_per_keyword: int = Field(default=12, ge=1, le=50)
+    max_products_per_keyword: int = Field(default=40, ge=1, le=50)
 
     allowed_templates: list[str] = ['default', 'urgente', 'clean']
     template_learning: bool = True
