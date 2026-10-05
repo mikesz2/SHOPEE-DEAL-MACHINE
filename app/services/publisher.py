@@ -89,8 +89,6 @@ def _validate_for_publish(db: Session, event: OfferEvent, product: Product, runt
         raise ValueError('score abaixo do mínimo')
     if is_in_cooldown(db, product.id, runtime.cooldown_days, event.id) and not force:
         raise ValueError('produto em cooldown')
-    if category_quota_exceeded(db, product, runtime) and not force:
-        raise ValueError('limite diário da categoria atingido')
     if too_many_same_category(db, product, runtime) and not force:
         raise ValueError('categoria já apareceu vezes demais em sequência')
     similar, sim_reason = similar_recently_published(db, product, runtime)
