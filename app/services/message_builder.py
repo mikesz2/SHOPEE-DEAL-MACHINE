@@ -41,11 +41,13 @@ def _facts(product):
     discount = product.get("priceDiscountRate") if product.get("priceDiscountRate") is not None else product.get("discount_rate")
     original = product.get("original_price")
 
-    # Only use a real original price supplied by the source. Never invent a "DE"
-    # price just to make the message look better.
+    original_estimated = False
     try:
-        if original is not None and price is not None and float(original) <= float(price):
-            original = None
+        if price is not None and (original is None or float(original) <= float(price)) and discount:
+            estimated = estimated_original(price, discount)
+            if estimated and estimated > float(price):
+                original = estimated
+                original_estimated = True
     except Exception:
         original = None
 
@@ -79,7 +81,8 @@ def build_offer_caption(product, affiliate_url: str, score: float, source_type: 
     lines = ["🔥 <b>OFERTA BOA ❤️</b>", "", f"🛍️ <b>{name}</b>", ""]
 
     if original and price:
-        lines.append(f"❌ DE: <s>{money(original)}</s>")
+        suffix = " <i>(ref. estimada)</i>" if original_estimated else ""
+        lines.append(f"❌ DE: <s>{money(original)}</s>{suffix}")
         lines.append(f"✅ POR: <b>{money(price)}</b>")
     elif price:
         lines.append(f"✅ POR: <b>{money(price)}</b>")
