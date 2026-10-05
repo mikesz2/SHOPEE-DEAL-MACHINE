@@ -12,7 +12,7 @@ from app.services.telegram_bot import TelegramPublisher
 from app.services.shopee import ShopeeAffiliateClient
 from app.services.ingest import upsert_product
 from app.services.filters import (
-    blocked_reason, category_quota_exceeded, too_many_same_category,
+    blocked_reason, too_many_same_category,
     similar_recently_published, in_quiet_hours
 )
 from app.services.analytics import choose_template, smart_interval_minutes
